@@ -21,5 +21,5 @@ public class HelloWorldController {
     public HelloWorldBean helloWorldPathVaraible(@PathVariable String name){
         return new HelloWorldBean(String.format("Hello world, %s", name));
     }
-    
+
 }
