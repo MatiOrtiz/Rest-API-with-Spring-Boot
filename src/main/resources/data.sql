@@ -1,11 +1,11 @@
 insert into user_details(id, birth_date, name)
-values ( 10001, CURRENT_DATE(), 'Matias' );
+values ( 10001, CURRENT_DATE, 'Matias' );
 
 insert into user_details(id, birth_date, name)
-values ( 10002, CURRENT_DATE(), 'Matt' );
+values ( 10002, CURRENT_DATE, 'Matt' );
 
 insert into user_details(id, birth_date, name)
-values ( 10003, CURRENT_DATE(), 'Mathew' );
+values ( 10003, CURRENT_DATE, 'Mathew' );
 
 insert into post(id, description, user_id)
 values(20001, 'I learned Spring JPA', 10001);

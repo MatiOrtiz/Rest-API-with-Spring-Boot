@@ -31,12 +31,12 @@ public class UserJpaResource {
     }
 
     @GetMapping("/jpa/users/{id}")
-    public EntityModel<Optional<User>> retrieveUser(@PathVariable int id){
+    public EntityModel<User> retrieveUser(@PathVariable int id){
         Optional<User> user= repository.findById(id);
         if(user==null)
             throw new UserNotFoundException("id:"+id);
 
-        EntityModel<Optional<User>> entityModel= EntityModel.of(user);
+        EntityModel<User> entityModel= EntityModel.of(user.get());
         WebMvcLinkBuilder link= linkTo(methodOn(this.getClass()).retrieveAllUsers());
         entityModel.add(link.withRel("all-users"));
 
@@ -54,6 +54,14 @@ public class UserJpaResource {
     @DeleteMapping("/jpa/users/{id}")
     public void deleteUser(@PathVariable int id){
         repository.deleteById(id);
+    }
+
+    @GetMapping("/jpa/users/{id}/posts")
+    public List<Post> retrievePostsForUser(@PathVariable int id){
+        Optional<User> user= repository.findById(id);
+        if(user==null)
+            throw new UserNotFoundException("id:"+id);
+        return user.get().getPosts();
     }
 
 }
