@@ -27,6 +27,8 @@ public class UserJpaResource {
         this.postRepository= postRepository;
     }
 
+    //--------------------USER Mappings--------------------//
+
     @GetMapping("/jpa/users")
     public List<User> retrieveAllUsers(){
         return userRepository.findAll();
@@ -53,10 +55,26 @@ public class UserJpaResource {
         return ResponseEntity.created(location).build();
     }
 
+    @PutMapping("/jpa/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable int id, @Valid @RequestBody User user){
+        User savedUser= retrieveUser(id).getContent();
+        savedUser.setName(user.getName());
+        savedUser.setBirthDate(user.getBirthDate());
+        savedUser.setPosts(savedUser.getPosts());
+        userRepository.save(savedUser);
+
+        URI location= ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(savedUser.getId()).toUri();
+        return ResponseEntity.created(location).build();
+    }
+
     @DeleteMapping("/jpa/users/{id}")
     public void deleteUser(@PathVariable int id){
         userRepository.deleteById(id);
     }
+
+
+    //--------------------POST Mappings--------------------//
 
     @GetMapping("/jpa/users/{id}/posts")
     public List<Post> retrievePostsForUser(@PathVariable int id){
@@ -96,14 +114,21 @@ public class UserJpaResource {
     public ResponseEntity<Object> updatePostForUser(@PathVariable int id, @PathVariable int number, @Valid @RequestBody Post post){
         Post savedPost= retrievePostForUser(id, number);
         User user= userRepository.findById(id).get();
+        if(user==null)
+            throw new UserNotFoundException("id:"+id);
+
         savedPost.setUser(user);
         savedPost.setDescription(post.getDescription());
         postRepository.save(savedPost);
 
-
         URI location= ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(savedPost.getId()).toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping("/jpa/users/{id}/posts/{number}")
+    public void deletePost(@PathVariable int number){
+        postRepository.deleteById(number);
     }
 
 }
